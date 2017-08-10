@@ -44,7 +44,7 @@ data "template_file" "demo-app-definition" {
 
 resource "aws_ecs_task_definition" "demo-app" {
 	family = "demo-app"
-	container_definitions = "${template_file.demo-app-definition.rendered}"
+	container_definitions = "${data.template_file.demo-app-definition.rendered}"
 }
 
 resource "aws_ecs_service" "demo-app" {
