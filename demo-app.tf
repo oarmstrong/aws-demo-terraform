@@ -35,46 +35,16 @@ resource "aws_route53_record" "demo-app" {
 	}
 }
 
+data "template_file" "demo-app-definition" {
+  template = "${file("task-definitions/demo-app.json")}"
+  vars {
+    mysql_endpoint = "${aws_db_instance.production.address}"
+  }
+}
+
 resource "aws_ecs_task_definition" "demo-app" {
 	family = "demo-app"
-	container_definitions = <<EOF
-[
-    {
-        "name": "demo-app-http",
-        "image": "126735570987.dkr.ecr.eu-west-2.amazonaws.com/fubra/demo-http:latest",
-        "cpu": 10,
-        "memory": 50,
-        "links": ["demo-app-php:php"],
-        "portMappings": [
-            {
-                "containerPort": 80,
-                "hostPort": 8080,
-                "protocol": "tcp"
-            }
-        ],
-        "essential": true,
-        "entryPoint": [],
-        "command": [],
-        "environment": [],
-        "mountPoints": [],
-        "volumesFrom": []
-    },
-    {
-        "name": "demo-app-php",
-        "image": "126735570987.dkr.ecr.eu-west-2.amazonaws.com/fubra/demo-php:latest",
-        "cpu": 10,
-        "memory": 50,
-        "links": [],
-        "portMappings": [],
-        "essential": true,
-        "entryPoint": [],
-        "command": [],
-        "environment": [],
-        "mountPoints": [],
-        "volumesFrom": []
-    }
-]
-EOF
+	container_definitions = "${template_file.demo-app-definition.rendered}"
 }
 
 resource "aws_ecs_service" "demo-app" {
@@ -112,6 +82,6 @@ resource "aws_codebuild_project" "demo-app" {
 
 	source {
 		type = "GITHUB"
-		location = "https://github.com/oarmstrong/aws-demo.git"
+		location = "https://github.com/oarmstrong/aws-demo-app.git"
 	}
 }
