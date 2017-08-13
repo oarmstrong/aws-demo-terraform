@@ -1,28 +1,3 @@
-resource "aws_elb" "demo-app" {
-	name = "demo-app"
-	security_groups = ["${aws_security_group.allow_all.id}"]
-	subnets = [
-		"${aws_subnet.production-2a.id}",
-		"${aws_subnet.production-2b.id}"
-	]
-
-	listener {
-		lb_protocol = "http"
-		lb_port = "80"
-
-		instance_protocol = "http"
-		instance_port = "8080"
-	}
-
-	health_check {
-		healthy_threshold = 3
-		unhealthy_threshold = 2
-		target = "HTTP:8080/"
-		interval = 5
-		timeout = 2
-	}
-}
-
 data "template_file" "demo-app-definition" {
   template = "${file("task-definitions/demo-app.json")}"
   vars {
@@ -35,6 +10,38 @@ resource "aws_ecs_task_definition" "demo-app" {
 	container_definitions = "${data.template_file.demo-app-definition.rendered}"
 }
 
+resource "aws_alb" "demo-app" {
+  name = "demo-app"
+  security_groups = ["${aws_security_group.allow_all.id}"]
+  internal = false
+  subnets = [
+    "${aws_subnet.production-2a.id}",
+    "${aws_subnet.production-2b.id}"
+  ]
+}
+
+output "demo-app-dns" {
+  value = "${aws_alb.demo-app.dns_name}"
+}
+
+resource "aws_alb_target_group" "demo-app" {
+  name = "demo-app"
+  protocol = "HTTP"
+  port = 80
+  vpc_id = "${aws_vpc.production.id}"
+}
+
+resource "aws_alb_listener" "demo-app" {
+  load_balancer_arn = "${aws_alb.demo-app.arn}"
+  port = "80"
+  protocol = "HTTP"
+
+  default_action = {
+    target_group_arn = "${aws_alb_target_group.demo-app.arn}"
+    type = "forward"
+  }
+}
+
 resource "aws_ecs_service" "demo-app" {
 	name = "demo-app"
 	cluster = "${aws_ecs_cluster.production.id}"
@@ -45,7 +52,7 @@ resource "aws_ecs_service" "demo-app" {
 	depends_on = ["aws_iam_role_policy.ecs_service_role_policy"]
 
 	load_balancer {
-		elb_name = "${aws_elb.demo-app.id}"
+    target_group_arn = "${aws_alb_target_group.demo-app.arn}"
 		container_name = "demo-app-http"
 		container_port = "80"
 	}

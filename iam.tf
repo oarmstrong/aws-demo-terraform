@@ -104,12 +104,13 @@ resource "aws_iam_role_policy" "ecs_service_role_policy" {
         "elasticloadbalancing:Describe*",
         "elasticloadbalancing:DeregisterInstancesFromLoadBalancer",
         "elasticloadbalancing:RegisterInstancesWithLoadBalancer",
+        "elasticloadbalancing:RegisterTargets",
         "ec2:Describe*",
         "ec2:AuthorizeSecurityGroupIngress",
-	"ecr:BatchCheckLayerAvailability",
-	"ecr:BatchGetImage",
-	"ecr:GetDownloadUrlForLayer",
-	"ecr:GetAuthorizationToken"
+        "ecr:BatchCheckLayerAvailability",
+        "ecr:BatchGetImage",
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:GetAuthorizationToken"
       ],
       "Resource": [
         "*"
