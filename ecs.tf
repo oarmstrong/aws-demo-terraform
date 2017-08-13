@@ -15,16 +15,35 @@ resource "aws_autoscaling_group" "ecs_production" {
 	]
 }
 
+data "template_file" "ecs_production_user_data" {
+  template ="${file("user-data/ecs_production")}"
+  vars {
+    efs_id = "${aws_efs_file_system.production.id}"
+  }
+}
 resource "aws_launch_configuration" "ecs_production" {
 	name = "ECS production"
-	image_id = "ami-ff15039b"
+	image_id = "ami-809f84e6"
 	instance_type = "t2.micro"
 	associate_public_ip_address = true
 	key_name = "ollie"
 	iam_instance_profile = "${aws_iam_instance_profile.ecs_host_profile.id}"
 	security_groups = ["${aws_security_group.allow_all.id}"]
-	user_data = <<EOF
-#!/bin/bash
-echo ECS_CLUSTER=production >>/etc/ecs/ecs.config
-EOF
+	user_data = "${data.template_file.ecs_production_user_data.rendered}"
+}
+
+resource "aws_efs_file_system" "production" {
+  creation_token = "production"
+}
+
+resource "aws_efs_mount_target" "production-1a" {
+  file_system_id = "${aws_efs_file_system.production.id}"
+  subnet_id = "${aws_subnet.production-1a.id}"
+  security_groups = ["${aws_security_group.allow_all.id}"]
+}
+
+resource "aws_efs_mount_target" "production-1b" {
+  file_system_id = "${aws_efs_file_system.production.id}"
+  subnet_id = "${aws_subnet.production-1b.id}"
+  security_groups = ["${aws_security_group.allow_all.id}"]
 }
