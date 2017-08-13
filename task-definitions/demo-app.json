@@ -1,7 +1,7 @@
 [
     {
         "name": "demo-app-http",
-        "image": "126735570987.dkr.ecr.eu-west-2.amazonaws.com/fubra/demo-http:latest",
+        "image": "126735570987.dkr.ecr.eu-west-1.amazonaws.com/fubra/demo-http:latest",
         "cpu": 10,
         "memory": 50,
         "links": ["demo-app-php:php"],
@@ -21,7 +21,7 @@
     },
     {
         "name": "demo-app-php",
-        "image": "126735570987.dkr.ecr.eu-west-2.amazonaws.com/fubra/demo-php:latest",
+        "image": "126735570987.dkr.ecr.eu-west-1.amazonaws.com/fubra/demo-php:latest",
         "cpu": 10,
         "memory": 50,
         "links": [],

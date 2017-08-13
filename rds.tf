@@ -1,8 +1,8 @@
 resource "aws_db_subnet_group" "production" {
 	name = "production"
 	subnet_ids = [
-		"${aws_subnet.production-2a.id}",
-		"${aws_subnet.production-2b.id}"
+		"${aws_subnet.production-1a.id}",
+		"${aws_subnet.production-1b.id}"
 	]
 }
 

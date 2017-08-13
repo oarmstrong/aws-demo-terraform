@@ -15,8 +15,8 @@ resource "aws_alb" "demo-app" {
   security_groups = ["${aws_security_group.allow_all.id}"]
   internal = false
   subnets = [
-    "${aws_subnet.production-2a.id}",
-    "${aws_subnet.production-2b.id}"
+    "${aws_subnet.production-1a.id}",
+    "${aws_subnet.production-1b.id}"
   ]
 }
 

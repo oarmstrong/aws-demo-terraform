@@ -10,8 +10,8 @@ resource "aws_autoscaling_group" "ecs_production" {
 	health_check_type = "EC2"
 	launch_configuration = "${aws_launch_configuration.ecs_production.name}"
 	vpc_zone_identifier = [
-		"${aws_subnet.production-2a.id}",
-		"${aws_subnet.production-2b.id}"
+		"${aws_subnet.production-1a.id}",
+		"${aws_subnet.production-1b.id}"
 	]
 }
 
