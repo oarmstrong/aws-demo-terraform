@@ -56,8 +56,3 @@ resource "aws_security_group" "allow_all" {
 		cidr_blocks = ["0.0.0.0/0"]
 	}
 }
-
-// Domain
-resource "aws_route53_zone" "primary" {
-	name = "aws.oarmstrong.us"
-}

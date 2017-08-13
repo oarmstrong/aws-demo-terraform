@@ -23,18 +23,6 @@ resource "aws_elb" "demo-app" {
 	}
 }
 
-resource "aws_route53_record" "demo-app" {
-	zone_id = "${aws_route53_zone.primary.zone_id}"
-	name = "demo.aws.oarmstrong.us"
-	type = "A"
-
-	alias {
-		name = "${aws_elb.demo-app.dns_name}"
-		zone_id = "${aws_elb.demo-app.zone_id}"
-		evaluate_target_health = true
-	}
-}
-
 data "template_file" "demo-app-definition" {
   template = "${file("task-definitions/demo-app.json")}"
   vars {
