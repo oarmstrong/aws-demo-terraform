@@ -16,7 +16,13 @@
         "entryPoint": [],
         "command": [],
         "environment": [],
-        "mountPoints": [],
+        "mountPoints": [
+            {
+                "sourceVolume": "demo-app-uploads",
+                "containerPath": "/app/uploads",
+                "readOnly": true
+            }
+        ],
         "volumesFrom": []
     },
     {
@@ -35,7 +41,12 @@
 		        {"name": "MYSQL_USER", "value": "app"},
             {"name": "MYSQL_PASSWORD", "value": "password"}
         ],
-        "mountPoints": [],
+        "mountPoints": [
+            {
+                "sourceVolume": "demo-app-uploads",
+                "containerPath": "/uploads"
+            }
+        ],
         "volumesFrom": []
     }
 ]

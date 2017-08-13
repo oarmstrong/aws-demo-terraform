@@ -8,6 +8,11 @@ data "template_file" "demo-app-definition" {
 resource "aws_ecs_task_definition" "demo-app" {
 	family = "demo-app"
 	container_definitions = "${data.template_file.demo-app-definition.rendered}"
+
+  volume {
+    name = "demo-app-uploads"
+    host_path = "/efs/demo-app/uploads"
+  }
 }
 
 resource "aws_alb" "demo-app" {
