@@ -13,6 +13,8 @@ cloud-init-per once mkdir_efs mkdir /efs
 
 # Mount /efs
 cloud-init-per once mount_efs echo -e '${efs_id}.efs.eu-west-1.amazonaws.com:/ /efs nfs4 nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2 0 0' >> /etc/fstab
+cloud-init-per once wait_efs_script echo -e '#!/bin/bash\n while [ -z "$(dig +short $1)" ]; do echo waiting; sleep 10; done' > /usr/local/bin/wait-dns
+cloud-init-per once wait_efs bash /usr/local/bin/wait-efs ${efs_id}.efs.eu-west-1.amazonaws.com 
 mount -a
 
 --==BOUNDARY==
